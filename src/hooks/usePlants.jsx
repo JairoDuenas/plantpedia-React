@@ -10,9 +10,9 @@ export const usePlants = (initialQuery = "") => {
     setLoading(true);
     setError(null);
     try {
-      const data = query
-        ? await plantService.searchPlants(query)
-        : await plantService.getFeaturedPlants();
+      const data = await plantService.searchPlants(
+        query || "plantas populares",
+      );
       setPlants(data);
     } catch (err) {
       setError("Error al cargar las plantas");

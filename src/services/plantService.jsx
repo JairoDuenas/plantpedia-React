@@ -6,17 +6,32 @@ const API_KEY = process.env.GEMINI_API_KEY || "";
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
+// Función auxiliar para esperar (delay)
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Sistema de caché simple en memoria
+const searchCache = new Map();
+
 export const plantService = {
-  async searchPlants(query) {
+  async searchPlants(query, retries = 2) {
     if (!API_KEY) {
       console.error("GEMINI_API_KEY is missing");
       return [];
     }
 
+    // Normalizar la consulta para la caché
+    const cacheKey = (query || "plantas populares").toLowerCase().trim();
+
+    // Si ya tenemos el resultado en caché, lo devolvemos inmediatamente
+    if (searchCache.has(cacheKey)) {
+      console.log(`Caché hit para: "${cacheKey}"`);
+      return searchCache.get(cacheKey);
+    }
+
     try {
       const response = await ai.models.generateContent({
         model: "gemini-3-flash-preview",
-        contents: `Genera una lista de 6 plantas relacionadas con la búsqueda: "${query}". Proporciona información detallada para cada una en idioma ESPAÑOL.`,
+        contents: `Genera una lista de 6 plantas relacionadas con la búsqueda o categoría: "${query || "plantas populares"}". Proporciona información detallada para cada una en idioma ESPAÑOL. Asegúrate de que las plantas sean variadas y representativas.`,
         config: {
           responseMimeType: "application/json",
           responseSchema: {
@@ -58,11 +73,25 @@ export const plantService = {
       });
 
       const plants = JSON.parse(response.text || "[]");
-      return plants.map((p) => ({
+      const processedPlants = plants.map((p) => ({
         ...p,
-        imageUrl: `https://picsum.photos/seed/${encodeURIComponent(p.name)}/800/600`,
+        imageUrl: `https://loremflickr.com/800/600/${encodeURIComponent(p.name + " plant")}/all`,
       }));
+
+      // Guardar en caché antes de devolver
+      searchCache.set(cacheKey, processedPlants);
+      return processedPlants;
     } catch (error) {
+      // Si es un error de cuota (429) y tenemos reintentos disponibles
+      if (error.message?.includes("429") && retries > 0) {
+        const waitTime = (3 - retries) * 5000; // Esperar más en cada reintento (5s, 10s)
+        console.log(
+          `Cuota excedida. Reintentando en ${waitTime / 1000} segundos... (${retries} reintentos restantes)`,
+        );
+        await sleep(waitTime);
+        return this.searchPlants(query, retries - 1);
+      }
+
       console.error("Error fetching plants:", error);
       return [];
     }

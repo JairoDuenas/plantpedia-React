@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Search } from "lucide-react";
 
 export const SearchBar = ({ onSearch }) => {
@@ -20,7 +20,7 @@ export const SearchBar = ({ onSearch }) => {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Busca cualquier planta (ej. Monstera, Lavanda...)"
-          className="w-full bg-white border-none h-16 pl-14 pr-6 rounded-2xl shadow-xl shadow-stone-200/50 text-stone-800 placeholder:text-stone-400 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
+          className="w-full bg-white dark:bg-stone-900 border-none h-16 pl-14 pr-6 rounded-2xl shadow-xl shadow-stone-200/50 dark:shadow-none text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:ring-2 focus:ring-emerald-500 transition-all outline-none"
         />
         <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-stone-400 group-focus-within:text-emerald-500 transition-colors" />
         <button

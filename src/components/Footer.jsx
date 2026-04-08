@@ -1,9 +1,8 @@
-import React from "react";
 import { Leaf } from "lucide-react";
 
 export const Footer = () => {
   return (
-    <footer className="bg-stone-900 text-stone-400 py-20">
+    <footer className="bg-stone-900 dark:bg-black text-stone-400 dark:text-stone-500 py-20 border-t border-stone-800 dark:border-stone-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
@@ -85,7 +84,7 @@ export const Footer = () => {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-stone-800 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-8 border-t border-stone-800 dark:border-stone-900 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
           <p>
             © 2026 FitoPedia Enciclopedia Botánica. Todos los derechos
             reservados.

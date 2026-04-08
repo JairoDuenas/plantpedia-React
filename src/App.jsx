@@ -1,7 +1,8 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/Layout";
 import Home from "./pages/Home";
+import CareGuides from "./pages/CareGuides";
+import Community from "./pages/Community";
 
 export default function App() {
   return (
@@ -9,7 +10,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          {/* Add more routes here as needed */}
+          <Route path="guias" element={<CareGuides />} />
+          <Route path="comunidad" element={<Community />} />
         </Route>
       </Routes>
     </Router>

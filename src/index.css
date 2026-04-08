@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap");
 @import "tailwindcss";
 
 @theme {
@@ -7,8 +8,17 @@
     serif;
 }
 
-body {
-  @apply bg-stone-50 text-stone-900 font-sans;
+/* Forzar soporte de clase .dark en Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  body {
+    @apply bg-stone-50 text-stone-900 font-sans transition-colors duration-300;
+  }
+
+  .dark body {
+    @apply bg-stone-950 text-stone-50;
+  }
 }
 
 .font-serif {
