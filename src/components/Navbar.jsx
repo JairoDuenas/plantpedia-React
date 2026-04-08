@@ -1,12 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { Leaf, Menu, X, Sun, Moon } from "lucide-react";
+import { Leaf, Menu, X, Sun, Moon, Download } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from "../context/ThemeContext";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBtn, setShowInstallBtn] = useState(false);
   const { theme, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBtn(true);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === "accepted") {
+      setShowInstallBtn(false);
+    }
+    setDeferredPrompt(null);
+  };
 
   const navLinkClass = ({ isActive }) =>
     `transition-colors ${isActive ? "text-emerald-600 font-bold" : "text-stone-600 dark:text-stone-300 hover:text-emerald-600 dark:hover:text-emerald-400"}`;
@@ -45,6 +67,15 @@ export const Navbar = () => {
             </NavLink>
 
             <div className="flex items-center gap-4 border-l border-stone-200 dark:border-stone-800 pl-8">
+              {showInstallBtn && (
+                <button
+                  onClick={handleInstallClick}
+                  className="flex items-center gap-2 text-emerald-600 dark:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 px-3 py-2 rounded-full transition-colors font-bold"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Instalar</span>
+                </button>
+              )}
               <button
                 onClick={toggleTheme}
                 className="p-2 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full transition-colors"
@@ -64,6 +95,15 @@ export const Navbar = () => {
 
           {/* Mobile Menu Button & Theme Toggle */}
           <div className="md:hidden flex items-center gap-2">
+            {showInstallBtn && (
+              <button
+                onClick={handleInstallClick}
+                className="p-2 text-emerald-600 dark:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-full transition-colors"
+                aria-label="Install app"
+              >
+                <Download className="w-5 h-5" />
+              </button>
+            )}
             <button
               onClick={toggleTheme}
               className="p-2 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full transition-colors"
