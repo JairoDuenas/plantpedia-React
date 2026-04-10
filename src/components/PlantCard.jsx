@@ -1,9 +1,15 @@
+import { forwardRef } from "react";
 import { motion } from "motion/react";
 import { Droplets, Sun, ArrowRight } from "lucide-react";
 
-export const PlantCard = ({ plant, onClick }) => {
+export const PlantCard = forwardRef(({ plant, onClick }, ref) => {
+  const handleImageError = (e) => {
+    e.target.src = `https://loremflickr.com/800/600/${encodeURIComponent(plant.name || "plant")}/all`;
+  };
+
   return (
     <motion.div
+      ref={ref}
       layout
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -15,6 +21,7 @@ export const PlantCard = ({ plant, onClick }) => {
         <img
           src={plant.imageUrl}
           alt={plant.name}
+          onError={handleImageError}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           referrerPolicy="no-referrer"
         />
@@ -53,4 +60,4 @@ export const PlantCard = ({ plant, onClick }) => {
       </div>
     </motion.div>
   );
-};
+});

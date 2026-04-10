@@ -1,9 +1,18 @@
 <!doctype html>
 <html lang="es">
   <head>
+    <script>
+      window.deferredPWAEvent = null;
+      console.log("PWA: Script de alta prioridad inicializado (v2.2)");
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        console.log("PWA: ¡EVENTO CAPTURADO! Chrome ha dado permiso.");
+        e.preventDefault();
+        window.deferredPWAEvent = e;
+        window.dispatchEvent(new CustomEvent("pwa-ready"));
+      });
+    </script>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PlantPedia - Plant Encyclopedia</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -12,10 +21,7 @@
     />
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#059669" />
-    <link
-      rel="apple-touch-icon"
-      href="https://cdn-icons-png.flaticon.com/512/628/628283.png"
-    />
+    <link rel="apple-touch-icon" href="/leaf.png" />
   </head>
   <body>
     <div id="root"></div>
